@@ -10,8 +10,8 @@ module.exports = (req, res, next) => {
       return res.status(401).json({ success: false, message: 'Token invalid' });
     
     }
-    req.userId = decoded.userId;
-    req.role = decoded.role;
+    req.userId = decoded.userid;
+    req.email = decoded.email;
     
     next();
   });

@@ -78,97 +78,134 @@ Router.get("/html", async (req, res) => {
 });
 
 Router.get("/rmakeId",checkauth,  async (req, res) => {
-    const {userId} = req.body;
-    const rmakeId = await user.find({userId}).sort({"rmakeid":-1}).limit(1) ;
-    res.json(rmakeId);
+    const userId = req.userId;
+    rdata.findOne({userId}).sort({"rmakeid":-1}).limit(1)
+    .exec()
+    .then((res1) => {
+        res.json(res1);
+    })
 });
 
-Router.post("/personal_info",  async (req, res) => {
-    const userId = "65bcb60b297437ab8f9408f2";
-    const rmakeid = 1;
-    const frist_nm = "avi";
-    const last_nm = "chovatiya";
-    const profession = "web developer";
-    const city = "jamnagar";
-    const country = "india";
-    const pin_code = 361001;
-    const phone = 9327027978;
-    const email = "avichovatiya0@gmail.com";
-    const newrdara = await rdata({userId:userId, rmakeid:rmakeid, frist_nm:frist_nm, last_nm:last_nm, profession:profession, city:city, country:country, pin_code:pin_code, phone:phone, email:email});
+Router.post("/personal_info",checkauth , async (req, res) => {
+    const userId = req.userId;
+    const {rmakeid,frist_nm,last_nm,dob,gender,marital_status, profession, address, country, phone, email} = req.body;
+    // const rmakeid = 1;
+    // const frist_nm = "avi";
+    // const last_nm = "chovatiya";
+    // const dob = 23/21/2004;
+    // const gender = "male";
+    // const marital_status = "unmarried"
+    // const profession = "web developer";
+    // const address = "xyz abd def lmn"
+    // const country = "india";
+    // const phone = 9327027978;
+    // const email = "avichovatiya0@gmail.com";
+    console.log(rmakeid,frist_nm,last_nm,dob,gender,marital_status, profession, address, country,  phone, email);
+    const newrdara = await rdata({userId:userId, rmakeid:rmakeid, frist_nm:frist_nm, DOB:dob, gender:gender, marital_status:marital_status, last_nm:last_nm, profession:profession, address:address , country:country,  phone:phone, email:email});
     newrdara.save();
+    res.json({message:"created"});
 }); 
 
 
-Router.post("/personal_info",  async (req, res) => {
-    const userId = "65bcb60b297437ab8f9408f2";
-    const rmakeid = 1;
-    const skils = [
-        {
-            name : "web developer"
-        },
-        {
-            name : " wed disgner"
-        }
-    ]
+Router.post("/skils",checkauth,  async (req, res) => {
+    const userId = req.userId;
+    const {rmakeid , skils} = req.body;
+    console.log(req.body);
+
+    // const rmakeid = 1;
+    // const skils = [
+    //     {
+    //         name : "web developer"
+    //     },
+    //     {
+    //         name : " wed disgner",
+    //         level : "low"
+    //     }
+    // ]
+
+
     rdata.findOneAndUpdate({userId:userId,rmakeid:rmakeid},{skils:skils})
     .then((res1)=>{
         res.json("update");
     })
 });
 
-Router.post("/professional_summary",  async (req, res) => {
-    const userId = "65bcb60b297437ab8f9408f2";
-    const rmakeid = 1;
-    const professional_summary = "alkhsdf alskdfh alksdhf alskdfb alksfal sfh aldflaksd laksdfh laksdf alksdhhfiauh uehfhalwiug dhf bale8rugsjf ";
-    rdata.findOneAndUpdate({userId:userId,rmakeid:rmakeid},{professional_summary:professional_summary})
-    .then((res1)=>{
-        res.json("update");
-    })
-});
 
-Router.post("/work_hs",  async (req, res) => {
-    const userId = "65bcb60b297437ab8f9408f2";
-    const rmakeid = 1;
-    const work_hs = [
-        {
-            job_title:"web developer",
-            emp:"emp",
-            location:"jamnagar",
-            start_date:"01/2024",
-            end_date:"currently",
-            job_description:"Coded websites using HTML, CSS, JavaScript, and jQuery languages.",
-        },
-        {
-            job_title:"web developer",
-            emp:"emp",
-            location:"jamnagar",
-            start_date:"01/2024",
-            end_date:"currently",
-            job_description:"Coded websites using HTML, CSS, JavaScript, and jQuery languages.",
-        }
-    ]
+Router.post("/work_hs", checkauth,  async (req, res) => {
+    const userId = req.userId;
+    const {rmakeid , work_hs} = req.body;
+
+    console.log(req.body , userId);
+
+    // const userId = "65bcb60b297437ab8f9408f2";
+    // const rmakeid = 1;
+    // const work_hs = [
+    //     {
+    //         job_title:"web developer",
+    //         emp:"emp",
+    //         location:"jamnagar",
+    //         start_date:"01/2024",
+    //         end_date:"currently",
+    //         job_description:"Coded websites using HTML, CSS, JavaScript, and jQuery languages.",
+    //     },
+    //     {
+    //         job_title:"web developer",
+    //         emp:"emp",
+    //         location:"jamnagar",
+    //         start_date:"01/2024",
+    //         end_date:"currently",
+    //         job_description:"Coded websites using HTML, CSS, JavaScript, and jQuery languages.",
+    //     }
+    // ]
+    
     rdata.findOneAndUpdate({userId:userId,rmakeid:rmakeid},{work_hs:work_hs})
     .then((res1)=>{
+        res.json("update work_hs");
+    })
+});
+
+Router.post("/professional_summary",checkauth,  async (req, res) => {
+    const userId = req.userId;
+    const {rmakeid,professional_summary,interest1,interest2,interest3} = req.body;
+
+    // const userId = "65bcb60b297437ab8f9408f2";
+    // const rmakeid = 1;
+    // const professional_summary = "alkhsdf alskdfh alksdhf alskdfb alksfal sfh aldflaksd laksdfh laksdf alksdhhfiauh uehfhalwiug dhf bale8rugsjf ";
+    
+    rdata.findOneAndUpdate({userId:userId,rmakeid:rmakeid},{professional_summary:professional_summary,interest1:interest1,interest2:interest2,interest3:interest3,})
+    .then((res1)=>{
         res.json("update");
     })
 });
 
-Router.post("/education",  async (req, res) => {
-    const userId = "65bcb60b297437ab8f9408f2";
-    const rmakeid = 1;
-    const education = [
-        {
-            s_name:"abc",
-            s_location:"Jamnagar",
-            degree:"bca",
-            field_of_study:"web",
-            graduation_date:"03/25",
-        }
-    ]
+
+Router.post("/education", checkauth, async (req, res) => {
+    // const userId = "65bcb60b297437ab8f9408f2";
+    const userId = req.userId;
+    const {rmakeid , education} = req.body;
+    console.log(req.body);
+    // const rmakeid = 1;
+    // const education = [
+    //     {
+    //         s_name:"abc",
+    //         s_location:"Jamnagar",
+    //         degree:"bca",
+    //         field_of_study:"web",
+    //         graduation_date:"03/25",
+    //     }
+    // ]
+    
     rdata.findOneAndUpdate({userId:userId,rmakeid:rmakeid},{education:education})
     .then((res1)=>{
         res.json("update");
     })
+});
+
+Router.post("/getrdata",checkauth,  async (req, res) => {
+    const userId = req.userId;
+    const {rmakeid} = req.body;
+    const data = await rdata.findOne({userId:userId,rmakeid:rmakeid});
+    res.json(data);
 });
 
 module.exports = Router;
